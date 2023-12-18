@@ -13,7 +13,7 @@ abstract contract Roulette {
     mapping(address => BetInfo) public players;
 
     // 下注
-    function makeBet(address player, uint256 betAmount, uint8 betNumber) public virtual;
+    function makeBet(address payable player, uint256 betAmount, uint8 betNumber) public virtual;
 
     // 开奖
     function play(address player) public virtual;
