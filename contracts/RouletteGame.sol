@@ -6,6 +6,7 @@ import "./JettonPool.sol";
 
 contract RouletteGame is Roulette, JettonPool {
 
+    // 下注
     function makeBet(address payable player, uint256 betAmount, uint8 betNumber) public override {
         // player is not address 0
         require(player != address(0), "player is not address 0");
@@ -21,6 +22,6 @@ contract RouletteGame is Roulette, JettonPool {
     }
 
     function play(address player) public override {
-        
+        // 
     }
 }
