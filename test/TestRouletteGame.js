@@ -47,4 +47,18 @@ describe("Test RouletteGame", function() {
             assert(afterPlayBalance - beforePlayBalance == diff, "玩家增加的积分等于玩家获利");
         }
     });
+
+    it(`玩家只要不断下注，账户就会输光`, async function() {
+        const { rouletteGame, addr1} = await loadFixture(deployTokenFixture);
+        await rouletteGame.getInitAmount(addr1);
+        let pBalance = await rouletteGame.balanceOf(addr1);
+        let betTimes = 0;
+        while (pBalance > 0) {
+            const betAmount = 10;
+            const betNumber = 5;
+            await rouletteGame.makeBet(addr1, betAmount, betNumber);
+            betTimes = betTimes + 1;
+            pBalance = await rouletteGame.balanceOf(addr1);
+        }
+    });
 });

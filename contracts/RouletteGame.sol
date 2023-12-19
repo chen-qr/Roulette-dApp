@@ -21,7 +21,8 @@ contract RouletteGame is Roulette, JettonPool {
         // player is not address 0
         require(player != address(0), "player is not address 0");
         // betAmount is zero
-        require(betAmount > 0 && betAmount < pBlance, "betAmount is zero");
+        require(betAmount > 0, "betAmount is zero and not less than playamount");
+        require(betAmount <= pBlance, "betAmount is less than player's balance");
         // betNumber is betwenn 0 and 36
         require(betNumber >= 0 && betNumber <= 36, "betNumber is betwenn 0 and 36");
 
