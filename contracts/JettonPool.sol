@@ -4,6 +4,6 @@ pragma solidity ^0.8.19;
 abstract contract JettonPool {
 
     address public owner;
-    uint256 private prizePoolBalance;
+    uint256 public prizePoolBalance;
     
 }

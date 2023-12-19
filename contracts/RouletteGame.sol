@@ -6,6 +6,10 @@ import "./JettonPool.sol";
 
 contract RouletteGame is Roulette, JettonPool {
 
+    constructor() {
+        prizePoolBalance = 100000;
+    }
+
     // 下注
     function makeBet(address payable player, uint256 betAmount, uint8 betNumber) public override {
         // player is not address 0
