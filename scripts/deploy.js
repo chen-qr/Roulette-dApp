@@ -12,16 +12,11 @@ async function main() {
 
   const lockedAmount = hre.ethers.parseEther("0.001");
 
-  const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+  const rouletteGame = await hre.ethers.deployContract("RouletteGame");
 
-  await lock.waitForDeployment();
-
+  await rouletteGame.waitForDeployment();
   console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
+    `RouletteGame deployed to ${rouletteGame.target}`
   );
 }
 
