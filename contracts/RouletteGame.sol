@@ -22,8 +22,7 @@ contract RouletteGame is Roulette, JettonPool {
         // betNumber is betwenn 0 and 36
         require(betNumber >= 0 && betNumber <= 36, "betNumber is betwenn 0 and 36");
 
-        BetInfo memory info = BetInfo();
-        info.player = player;
+        BetInfo memory info = BetInfo(player, betAmount, betNumber);
         players[player] = info;
 
         uint8 drawingNumber = 5;
