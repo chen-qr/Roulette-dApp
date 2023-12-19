@@ -14,8 +14,7 @@ contract RouletteGame is Roulette, JettonPool {
     }
 
     // 下注
-    function makeBet(address payable player, uint256 betAmount, uint8 betNumber) public override 
-        returns(uint8, uint256) {
+    function makeBet(address payable player, uint256 betAmount, uint8 betNumber) public override {
         // player is not address 0
         require(player != address(0), "player is not address 0");
         // betAmount is zero
@@ -23,7 +22,8 @@ contract RouletteGame is Roulette, JettonPool {
         // betNumber is betwenn 0 and 36
         require(betNumber >= 0 && betNumber <= 36, "betNumber is betwenn 0 and 36");
 
-        BetInfo memory info = BetInfo(player, betAmount, betNumber);
+        BetInfo memory info = BetInfo();
+        info.player = player;
         players[player] = info;
 
         uint8 drawingNumber = 5;
@@ -35,6 +35,5 @@ contract RouletteGame is Roulette, JettonPool {
         }
         // return (drawingNumber, drawingAmount);
         testNum = testNum + 1;
-        return (5, 5678);
     }
 }

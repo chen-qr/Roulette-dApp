@@ -5,5 +5,4 @@ abstract contract JettonPool {
 
     address public owner;
     uint256 public prizePoolBalance;
-    
 }
