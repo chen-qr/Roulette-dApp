@@ -5,4 +5,5 @@ abstract contract JettonPool {
 
     address public owner;
     uint256 public prizePoolBalance;
+    mapping(address => uint256) public playersBlance;
 }

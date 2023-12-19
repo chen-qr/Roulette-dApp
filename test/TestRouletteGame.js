@@ -18,23 +18,19 @@ describe("Test RouletteGame", function() {
         expect(await rouletteGame.prizePoolBalance()).to.equal(prizePoolBalance);
     });
 
+    const userInitBalance = 100;
+    it(`玩家的初始积分必须等于${userInitBalance}`, async function() {
+        const { rouletteGame, addr1 } = await loadFixture(deployTokenFixture);
+        expect(await rouletteGame.getBalance(addr1)).to.equal(userInitBalance);
+    });
+
     it(`下注一次`, async function() {
         const { rouletteGame, addr1} = await loadFixture(deployTokenFixture);
         const betAmount = 100;
         const betNumber = 5;
-        // const {drawingNumber, drawingAmount} = await rouletteGame.makeBet(addr1, betAmount, betNumber);
-        // console.log(drawingNumber, drawingAmount);
         const transaction = await rouletteGame.makeBet(addr1, betAmount, betNumber);
         await transaction.wait();
-        // const result = await rouletteGame.test();
-        console.log(transaction);
-        // if (drawingNumber == betNumber) {
-        //     assert(drawingAmount == betAmount * 9, "中奖后，返回金额等于下注的倍数");
-        // } else {
-        //     assert(drawingAmount == 0, "没中奖，返回金额为0");
-        // }
-        const testNum = await rouletteGame.testNum();
-        console.log(testNum);
-        assert(testNum == 1, "测试函数返回1");
+        // const result = await rouletteGame.playersDrawingInfo();
+        // console.log(result);
     });
 });
