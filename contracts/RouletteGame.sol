@@ -43,11 +43,17 @@ contract RouletteGame is Roulette, JettonPool {
         delete playersBetInfo[player];
     }
 
-    function getBalance(address player) public returns(uint256) {
-        if (playersBetTimes[player] == 0) { // 玩家第一次玩
-            playersBlance[player] = 100; // 给玩家100初始积分
+    function getInitAmount(address player) public returns(bool) {
+        if (playersHasGetInitAmount[player] > 0) {
+            return false;
+        } else {
+            playersBlance[player] = 100;
+            playersHasGetInitAmount[player] = 1;
+            return true;
         }
+    }
 
+    function balanceOf(address player) public view returns(uint256) {
         return playersBlance[player];
     }
 }

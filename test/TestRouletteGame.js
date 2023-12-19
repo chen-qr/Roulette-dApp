@@ -19,9 +19,11 @@ describe("Test RouletteGame", function() {
     });
 
     const userInitBalance = 100;
-    it(`玩家的初始积分必须等于${userInitBalance}`, async function() {
+    it(`玩家获取初始积分为${userInitBalance}`, async function() {
         const { rouletteGame, addr1 } = await loadFixture(deployTokenFixture);
-        expect(await rouletteGame.getBalance(addr1)).to.equal(userInitBalance);
+        await rouletteGame.getInitAmount(addr1);
+        const result = await rouletteGame.balanceOf(addr1);
+        expect(result).to.equal(userInitBalance);
     });
 
     it(`下注一次`, async function() {

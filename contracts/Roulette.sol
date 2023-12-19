@@ -12,7 +12,7 @@ abstract contract Roulette {
     // 玩家的下注信息
     mapping(address => BetInfo) public playersBetInfo;
 
-    mapping (address => uint256) public playersBetTimes;
+    mapping (address => uint256) public playersHasGetInitAmount;
 
     // 下注
     function makeBet(address payable player, uint256 betAmount, uint8 betNumber) 
