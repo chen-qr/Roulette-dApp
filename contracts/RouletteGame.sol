@@ -7,6 +7,7 @@ import "./JettonPool.sol";
 contract RouletteGame is Roulette, JettonPool {
 
     constructor() {
+        owner = msg.sender;
         prizePoolBalance = 100000;
     }
 
