@@ -18,7 +18,7 @@ describe("Test RouletteGame", function() {
         expect(await rouletteGame.prizePoolBalance()).to.equal(prizePoolBalance);
     });
 
-    it(`合约的owner是MetaMask的public key`, async function() {
+    it(`合约的owner是MetaMask的Public Key`, async function() {
         const { rouletteGame } = await loadFixture(deployTokenFixture);
         expect(await rouletteGame.owner()).to.equal(process.env.PUBLIC_KEY);
     });
