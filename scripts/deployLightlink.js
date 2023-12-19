@@ -7,13 +7,11 @@ async function main() {
     "Deploying contracts with the account（my metamask public key）:",
     deployer.address
   );
-  
-  console.log("Account balance:", (await deployer.getBalance()).toString());
 
   const RouletteGame = await ethers.getContractFactory("RouletteGame");
   const rouletteGame = await RouletteGame.deploy();
 
-  console.log("rouletteGame address:", rouletteGame.address);
+  console.log("rouletteGame address:", rouletteGame.target);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -6,10 +6,10 @@ module.exports = {
   solidity: "0.8.19",
 
   networks: {
-    PegasusTestnet: {
-      url: `https://replicator.pegasus.lightlink.io/rpc/v1`,
-      chainId: 1891,
-      accounts: [`0x${process.env.PRIVATE_KEY}`],
+    hardhat: {},
+    pegasus: {
+      url: 'https://replicator-01.pegasus.lightlink.io/rpc/v1',
+      accounts: [`0x${process.env.PRIVATE_KEY}`]
     }
-  }
+  },
 };
