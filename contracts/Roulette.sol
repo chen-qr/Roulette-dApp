@@ -2,6 +2,12 @@
 pragma solidity ^0.8.19;
 abstract contract Roulette {
 
+    // 下注赔率
+    uint256 bettingOdds;
+    uint256 beginNumber;
+    uint256 endNumber;
+    uint256 betCounts;
+
     // 投注信息
     struct BetInfo {
         address player; // 玩家地址

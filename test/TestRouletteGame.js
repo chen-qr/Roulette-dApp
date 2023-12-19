@@ -27,7 +27,8 @@ describe("Test RouletteGame", function() {
 
     it(`下注后玩家奖金和剩余奖金的关系正常`, async function() {
         const { rouletteGame, addr1} = await loadFixture(deployTokenFixture);
-        const betAmount = 100;
+        await rouletteGame.getInitAmount(addr1);
+        const betAmount = 10;
         const betNumber = 5;
         const beforePrizePoolBalance = await rouletteGame.prizePoolBalance();
         const beforePlayBalance = await rouletteGame.balanceOf(addr1);
@@ -39,7 +40,7 @@ describe("Test RouletteGame", function() {
             assert(afterPrizePoolBalance - beforePrizePoolBalance == betAmount, "奖金池增加的积分等于玩家下注");
             assert(beforePlayBalance - afterPlayBalance, "玩家减少的积分等于玩家下");
         } else { // 玩家赢
-            const diff = betAmount * 9 - betAmount; // 玩家获利数据
+            const diff = betAmount * 11 - betAmount; // 玩家获利数据
             assert(beforePrizePoolBalance - afterPrizePoolBalance == diff, "奖金池减少的积分等于玩家获利");
             assert(afterPlayBalance - beforePlayBalance == diff, "玩家增加的积分等于玩家获利");
         }
