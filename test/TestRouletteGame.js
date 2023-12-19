@@ -22,17 +22,26 @@ describe("Test RouletteGame", function() {
     it(`玩家获取初始积分为${userInitBalance}`, async function() {
         const { rouletteGame, addr1 } = await loadFixture(deployTokenFixture);
         await rouletteGame.getInitAmount(addr1);
-        const result = await rouletteGame.balanceOf(addr1);
-        expect(result).to.equal(userInitBalance);
+        expect(await rouletteGame.balanceOf(addr1)).to.equal(userInitBalance);
     });
 
-    it(`下注一次`, async function() {
+    it(`下注后玩家奖金和剩余奖金的关系正常`, async function() {
         const { rouletteGame, addr1} = await loadFixture(deployTokenFixture);
         const betAmount = 100;
         const betNumber = 5;
-        const transaction = await rouletteGame.makeBet(addr1, betAmount, betNumber);
-        await transaction.wait();
-        // const result = await rouletteGame.playersDrawingInfo();
-        // console.log(result);
+        const beforePrizePoolBalance = await rouletteGame.prizePoolBalance();
+        const beforePlayBalance = await rouletteGame.balanceOf(addr1);
+        await rouletteGame.makeBet(addr1, betAmount, betNumber);
+        const afterPrizePoolBalance = await rouletteGame.prizePoolBalance();
+        const afterPlayBalance = await rouletteGame.balanceOf(addr1);
+        assert(beforePrizePoolBalance != afterPrizePoolBalance, "下注钱后奖金池不能相等");
+        if (afterPrizePoolBalance > beforePrizePoolBalance) { // 玩家输
+            assert(afterPrizePoolBalance - beforePrizePoolBalance == betAmount, "奖金池增加的积分等于玩家下注");
+            assert(beforePlayBalance - afterPlayBalance, "玩家减少的积分等于玩家下");
+        } else { // 玩家赢
+            const diff = betAmount * 9 - betAmount; // 玩家获利数据
+            assert(beforePrizePoolBalance - afterPrizePoolBalance == diff, "奖金池减少的积分等于玩家获利");
+            assert(afterPlayBalance - beforePlayBalance == diff, "玩家增加的积分等于玩家获利");
+        }
     });
 });

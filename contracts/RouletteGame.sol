@@ -43,6 +43,7 @@ contract RouletteGame is Roulette, JettonPool {
         delete playersBetInfo[player];
     }
 
+    // 玩家获取初始积分
     function getInitAmount(address player) public returns(bool) {
         if (playersHasGetInitAmount[player] > 0) {
             return false;
@@ -53,6 +54,7 @@ contract RouletteGame is Roulette, JettonPool {
         }
     }
 
+    // 获取玩家的剩余积分
     function balanceOf(address player) public view returns(uint256) {
         return playersBlance[player];
     }
