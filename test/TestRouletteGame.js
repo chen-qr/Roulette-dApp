@@ -22,6 +22,8 @@ describe("Test RouletteGame", function() {
     it(`玩家获取初始积分为${userInitBalance}`, async function() {
         const { rouletteGame, addr1 } = await loadFixture(deployTokenFixture);
         await rouletteGame.getInitAmount(addr1);
+        await rouletteGame.getInitAmount(addr1); // 故意执行多次
+        await rouletteGame.getInitAmount(addr1);
         expect(await rouletteGame.balanceOf(addr1)).to.equal(userInitBalance);
     });
 
