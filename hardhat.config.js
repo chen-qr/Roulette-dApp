@@ -8,7 +8,7 @@ module.exports = {
   networks: {
     hardhat: {},
     pegasus: {
-      url: 'https://replicator-01.pegasus.lightlink.io/rpc/v1',
+      url: 'https://replicator.pegasus.lightlink.io/rpc/v1',
       accounts: [`0x${process.env.PRIVATE_KEY}`]
     }
   },
