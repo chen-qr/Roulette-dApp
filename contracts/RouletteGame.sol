@@ -6,6 +6,8 @@ import "./JettonPool.sol";
 
 contract RouletteGame is Roulette, JettonPool {
 
+    uint256 public testNum;
+
     constructor() {
         owner = msg.sender;
         prizePoolBalance = 100000;
@@ -32,10 +34,7 @@ contract RouletteGame is Roulette, JettonPool {
             drawingAmount = 0;
         }
         // return (drawingNumber, drawingAmount);
+        testNum = testNum + 1;
         return (5, 5678);
-    }
-
-    function test() public pure returns (uint256) {
-        return 123456789;
     }
 }

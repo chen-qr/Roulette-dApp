@@ -33,5 +33,8 @@ describe("Test RouletteGame", function() {
         // } else {
         //     assert(drawingAmount == 0, "没中奖，返回金额为0");
         // }
+        const testNum = await rouletteGame.testNum();
+        console.log(testNum);
+        assert(testNum == 1, "测试函数返回1");
     });
 });
