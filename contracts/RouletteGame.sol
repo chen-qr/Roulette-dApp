@@ -3,8 +3,14 @@ pragma solidity ^0.8.19;
 
 import "./Roulette.sol";
 import "./JettonPool.sol";
+import "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
 
 contract RouletteGame is Roulette, JettonPool {
+
+    // 初始化随机数熵源
+    address private entropyAddress = 0x8250f4aF4B972684F7b336503E2D6dFeDeB1487a;
+    address private entropyProvider = 0x8250f4aF4B972684F7b336503E2D6dFeDeB1487a;
+    IEntropy private entropy = IEntropy(entropyAddress);
 
     constructor() {
         owner = msg.sender;
