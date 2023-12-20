@@ -9,7 +9,7 @@ contract RouletteGame is Roulette, JettonPool {
 
     // 初始化随机数熵源
     address private entropyAddress = 0x8250f4aF4B972684F7b336503E2D6dFeDeB1487a;
-    address private entropyProvider = 0x8250f4aF4B972684F7b336503E2D6dFeDeB1487a;
+    address private entropyProvider = 0x6CC14824Ea2918f5De5C2f75A9Da968ad4BD6344;
     IEntropy private entropy = IEntropy(entropyAddress);
 
     constructor() {
