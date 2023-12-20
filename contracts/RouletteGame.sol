@@ -74,6 +74,50 @@ contract RouletteGame is Roulette, JettonPool {
             msg.sender))) % number;
     }
 
+    error InsufficientFee();
+    error IncorrectSender();
+
+    event FlipRequest(uint64 sequenceNumber);
+    event FlipResult(bool isHeads);
+
+    mapping(uint64 => address) private requestedFlips;
+
+    function requestFlip(bytes32 userCommitment) external payable {
+        uint256 fee = entropy.getFee(entropyProvider);
+        if (msg.value < fee) {
+            revert InsufficientFee();
+        }
+
+        uint64 sequenceNumber = entropy.request{value: fee}(
+            entropyProvider,
+            userCommitment,
+            true
+        );
+        requestedFlips[sequenceNumber] = msg.sender;
+
+        emit FlipRequest(sequenceNumber);
+    }
+
+    function revealFlip(
+        uint64 sequenceNumber,
+        bytes32 userRandom,
+        bytes32 providerRandom
+    ) public {
+        if (requestedFlips[sequenceNumber] != msg.sender) {
+            revert IncorrectSender();
+        }
+        delete requestedFlips[sequenceNumber];
+
+        bytes32 randomNumber = entropy.reveal(
+            entropyProvider,
+            sequenceNumber,
+            userRandom,
+            providerRandom
+        );
+
+        emit FlipResult(uint256(randomNumber) % 2 == 0);
+    }
+
     function getFlipFee() public view returns (uint256 fee) {
         fee = entropy.getFee(entropyProvider);
     }
