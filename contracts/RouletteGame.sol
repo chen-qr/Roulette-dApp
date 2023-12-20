@@ -78,7 +78,7 @@ contract RouletteGame is Roulette, JettonPool {
     error IncorrectSender();
 
     event FlipRequest(uint64 sequenceNumber);
-    event FlipResult(bool isHeads);
+    event FlipResult(uint64 drawingNumber);
 
     mapping(uint64 => address) private requestedFlips;
 
@@ -115,7 +115,7 @@ contract RouletteGame is Roulette, JettonPool {
             providerRandom
         );
 
-        emit FlipResult(uint256(randomNumber) % 2 == 0);
+        emit FlipResult(uint64(uint256(randomNumber) % 12));
     }
 
     function getFlipFee() public view returns (uint256 fee) {
