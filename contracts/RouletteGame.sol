@@ -74,4 +74,8 @@ contract RouletteGame is Roulette, JettonPool {
             msg.sender))) % number;
     }
 
+    function getFlipFee() public view returns (uint256 fee) {
+        fee = entropy.getFee(entropyProvider);
+    }
+
 }
