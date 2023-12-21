@@ -3,14 +3,14 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-abstract contract PandaCoin is ERC20 {
+contract PandaCoin is ERC20 {
     constructor() ERC20("PandaCoin", "PDC") {
         _mint(msg.sender, 100000000 * 100000000);
     }
 
-    function deposit(uint256 amount) external payable {
-        require(amount > 100000000, "deposit amount must larger than 100000000");
-        _mint(msg.sender, amount);
+    function deposit() external payable {
+        require(msg.value > 100000000, "deposit amount must larger than 100000000");
+        _mint(msg.sender, msg.value);
     }
 
     function withdraw(address payable user, uint256 amount) external {
