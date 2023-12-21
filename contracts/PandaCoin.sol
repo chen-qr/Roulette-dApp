@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract PandaCoin is ERC20 {
 
+    address private admin;
+
     // 货币质押的数量
     uint256 private pledgeAmount = 0;
     // 玩家手中可用的数量
@@ -14,6 +16,7 @@ contract PandaCoin is ERC20 {
 
     constructor() ERC20("PandaCoin", "PDC") {
         _mint(msg.sender, 100000000 * 100000000);
+        admin = msg.sender;
     }
 
     function deposit() external payable {
