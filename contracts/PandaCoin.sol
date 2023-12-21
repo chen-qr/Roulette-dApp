@@ -4,13 +4,25 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract PandaCoin is ERC20 {
+
+    // 货币质押的数量
+    uint256 private pledgeAmount = 0;
+    // 玩家手中可用的数量
+    uint256 private flowAmount = 0;
+    // 利润
+    uint256 private profitAmount = 0;
+
     constructor() ERC20("PandaCoin", "PDC") {
         _mint(msg.sender, 100000000 * 100000000);
     }
 
     function deposit() external payable {
         require(msg.value > 100000000, "deposit amount must larger than 100000000");
+        // 按照1比1的比例进行兑换
         _mint(msg.sender, msg.value);
+
+        pledgeAmount = pledgeAmount + msg.value;
+        flowAmount = flowAmount + msg.value;
     }
 
     function withdraw(address payable user, uint256 amount) external {
@@ -18,6 +30,9 @@ contract PandaCoin is ERC20 {
         require(amount <= balanceOf(msg.sender), "withdraw amount must <= sender's balance");
 
         _burn(user, amount);
+        pledgeAmount = pledgeAmount - amount;
+        flowAmount = flowAmount - amount;
+
         user.transfer(amount);
     }
 }
