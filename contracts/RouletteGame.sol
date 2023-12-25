@@ -38,6 +38,8 @@ contract RouletteGame is PandaToken, Random {
 
     // 下注
     function makeBet(address player, uint256 betAmount, uint256 betNumber, bytes32 userCommitment) external payable {
+        require(betAmount > 0 && betAmount <= getScore(), "Bet amount must be greater than 0 and less than user's score!");
+
         uint64 sequenceNumber = requestFlip(userCommitment);
         playersBetInfo[player] = BetInfo(player, betAmount, betNumber, userCommitment, sequenceNumber);
         emit BetRequest(sequenceNumber);
