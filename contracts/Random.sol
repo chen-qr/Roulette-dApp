@@ -12,12 +12,9 @@ contract Random {
     error InsufficientFee();
     error IncorrectSender();
 
-    event FlipRequest(uint64 sequenceNumber);
-    event FlipResult(uint64 drawingNumber);
-
     mapping(uint64 => address) private requestedFlips;
 
-    function requestFlip(bytes32 userCommitment) external payable {
+    function requestFlip(bytes32 userCommitment) internal returns(uint64) {
         uint256 fee = entropy.getFee(entropyProvider);
         if (msg.value < fee) {
             revert InsufficientFee();
@@ -30,14 +27,14 @@ contract Random {
         );
         requestedFlips[sequenceNumber] = msg.sender;
 
-        emit FlipRequest(sequenceNumber);
+        return sequenceNumber;
     }
 
     function revealFlip(
         uint64 sequenceNumber,
         bytes32 userRandom,
         bytes32 providerRandom
-    ) public {
+    ) internal returns(bytes32) {
         if (requestedFlips[sequenceNumber] != msg.sender) {
             revert IncorrectSender();
         }
@@ -50,7 +47,7 @@ contract Random {
             providerRandom
         );
 
-        emit FlipResult(uint64(uint256(randomNumber) % 12));
+        return randomNumber;
     }
 
     function getFlipFee() public view returns (uint256 fee) {

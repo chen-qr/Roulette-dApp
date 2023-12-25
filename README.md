@@ -2,6 +2,12 @@
 
 ## 项目命令
 
+### 编译和测试
+
+```shell
+npx hardhat clean && npx hardhat compile && npx hardhat test
+```
+
 ### 部署合约
 
 #### 本地网络

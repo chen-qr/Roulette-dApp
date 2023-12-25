@@ -17,11 +17,16 @@ contract RouletteGame is PandaToken, Random {
 
     mapping (address => uint256) public playersHasGetInitAmount;
 
+    event BetRequest(uint64 sequenceNumber);
+    event DrawingRequest(uint256 randomNumber, uint256 drawNumber);
+
     // 投注信息
     struct BetInfo {
         address player; // 玩家地址
         uint256 betAmount; // 投注金额
-        uint8 betNumber; // 压住点数 0～36
+        uint256 betNumber; // 压住点数 0～36
+        bytes32 userCommitment;
+        uint64 sequenceNumber;
     }
 
     constructor() PandaToken() Random(){
@@ -32,8 +37,28 @@ contract RouletteGame is PandaToken, Random {
     }
 
     // 下注
-    function makeBet(address payable player, uint256 betAmount, uint8 betNumber) public {
+    function makeBet(address player, uint256 betAmount, uint256 betNumber, bytes32 userCommitment) external payable {
+        uint64 sequenceNumber = requestFlip(userCommitment);
+        playersBetInfo[player] = BetInfo(player, betAmount, betNumber, userCommitment, sequenceNumber);
+        emit BetRequest(sequenceNumber);
+    }
+
+    function drawing(address player, uint64 sequenceNumber, bytes32 userRandom, bytes32 providerRandom) external {
+        require(playersBetInfo[player].sequenceNumber == sequenceNumber, "sequenceNumber is not match");
+
+        uint256 randomNumber = uint256(revealFlip(sequenceNumber, userRandom, providerRandom));
+        uint256 drawNumber = (randomNumber % betCounts) + beginNumber;
+
+        emit DrawingRequest(randomNumber, drawNumber);
+        uint256 userBetNumber = playersBetInfo[player].betNumber;
+        uint256 userBetAmount = playersBetInfo[player].betAmount;
+        if (userBetNumber == drawNumber ) { // user win
+            compensateScore(player, userBetAmount * bettingOdds - userBetAmount);
+        } else {
+            takeScore(player, userBetAmount);
+        }
         
+        delete playersBetInfo[player];
     }
 
 

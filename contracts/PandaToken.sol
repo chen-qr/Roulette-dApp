@@ -47,7 +47,17 @@ contract PandaToken is ERC20 {
         return userScore[msg.sender];
     }
 
-    function userWin(address user, uint256 amount) external {
-        // 
+    function takeScore(address user, uint256 amount) internal {
+        require(userScore[user] >= amount, "user's score must >= amount");
+
+        userScore[user] = userScore[user] - amount;
+        platformScore = platformScore + amount;
+    }
+
+    function compensateScore(address user, uint256 amount) internal {
+        require(platformScore >= amount, "platform's score must >= amount");
+
+        userScore[user] = userScore[user] + amount;
+        platformScore = platformScore - amount;
     }
 }
