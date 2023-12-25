@@ -18,14 +18,13 @@ contract RouletteGame is PandaToken, Random {
     mapping (address => uint256) public playersHasGetInitAmount;
 
     event BetRequest(uint64 sequenceNumber);
-    event DrawingRequest(uint256 randomNumber, uint256 drawNumber);
+    event DrawingRequest(uint256 randomNumber, uint256 drawNumber, bool isWin);
 
     // 投注信息
     struct BetInfo {
         address player; // 玩家地址
         uint256 betAmount; // 投注金额
         uint256 betNumber; // 压住点数 0～36
-        bytes32 userCommitment;
         uint64 sequenceNumber;
     }
 
@@ -41,7 +40,7 @@ contract RouletteGame is PandaToken, Random {
         require(betAmount > 0 && betAmount <= getScore(), "Bet amount must be greater than 0 and less than user's score!");
 
         uint64 sequenceNumber = requestFlip(userCommitment);
-        playersBetInfo[player] = BetInfo(player, betAmount, betNumber, userCommitment, sequenceNumber);
+        playersBetInfo[player] = BetInfo(player, betAmount, betNumber, sequenceNumber);
         emit BetRequest(sequenceNumber);
     }
 
@@ -51,17 +50,23 @@ contract RouletteGame is PandaToken, Random {
         uint256 randomNumber = uint256(revealFlip(sequenceNumber, userRandom, providerRandom));
         uint256 drawNumber = (randomNumber % betCounts) + beginNumber;
 
-        emit DrawingRequest(randomNumber, drawNumber);
         uint256 userBetNumber = playersBetInfo[player].betNumber;
         uint256 userBetAmount = playersBetInfo[player].betAmount;
         if (userBetNumber == drawNumber ) { // user win
+            emit DrawingRequest(randomNumber, drawNumber, true);
             compensateScore(player, userBetAmount * bettingOdds - userBetAmount);
         } else {
+            emit DrawingRequest(randomNumber, drawNumber, false);
             takeScore(player, userBetAmount);
         }
         
         delete playersBetInfo[player];
     }
 
-
+    function getBetInfo() external view returns(uint256 betAmount, uint256 betNumber, uint64 sequenceNumber) {
+        BetInfo memory betInfo = playersBetInfo[msg.sender];
+        betAmount = betInfo.betAmount;
+        betNumber = betInfo.betNumber;
+        sequenceNumber = betInfo.sequenceNumber;
+    }
 }
