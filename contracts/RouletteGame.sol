@@ -24,14 +24,14 @@ contract RouletteGame is PandaToken, Random {
     struct BetInfo {
         address player; // 玩家地址
         uint256 betAmount; // 投注金额
-        uint256 betNumber; // 压住点数 0～36
+        uint256 betNumber; // 压住点数 1～36
         uint64 sequenceNumber;
     }
 
     constructor() PandaToken() Random(){
-        bettingOdds = 11;
         beginNumber = 1;
-        endNumber = 12;
+        endNumber = 36;
+        bettingOdds = 30; // 赔率调低一点
         betCounts = endNumber - beginNumber + 1;
     }
 
