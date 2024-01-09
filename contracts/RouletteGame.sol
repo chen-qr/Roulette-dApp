@@ -18,6 +18,7 @@ contract RouletteGame is PandaToken, Random {
     event BetRequest(uint64 sequenceNumber);
 
     event DrawingRequest(
+        uint256 previousBlockId,
         uint256 drawNo,
         uint256 drawTime,
         address player, 
@@ -25,14 +26,13 @@ contract RouletteGame is PandaToken, Random {
         bytes32 userRandom, 
         bytes32 providerRandom, 
         uint256 finnalRandom, 
+        uint256 drawNumber, 
         uint256 betAmount,
         uint256 betNumber,
-        uint256 drawNumber, 
         bool isWin
     );
 
-    mapping(address => uint256) private playerRecordBlockIdStart;
-    mapping(address => uint256) private playerRecordBlockIdEnd;
+    mapping(address => uint256) private playerRecordLatestBlockId;
     mapping(address => uint256) private playerDrawCnts;
 
     // 投注信息
@@ -65,27 +65,23 @@ contract RouletteGame is PandaToken, Random {
         uint256 finnalRandom = uint256(revealFlip(sequenceNumber, userRandom, providerRandom));
         uint256 drawNumber = (finnalRandom % betCounts) + beginNumber;
         uint256 drawNo = playerDrawCnts[msg.sender] + 1;
+        uint256 previousBlockId = playerRecordLatestBlockId[msg.sender];
 
         uint256 betNumber = playersBetInfo[player].betNumber;
         uint256 betAmount = playersBetInfo[player].betAmount;
         
-        if (betNumber == drawNumber ) { // user win
-            // win
-            emit DrawingRequest(drawNo, block.timestamp, msg.sender, sequenceNumber, userRandom, providerRandom, 
-                finnalRandom, betAmount, betNumber, drawNumber, true); 
+        bool isWin = betNumber == drawNumber;
+        if (isWin) { // user win
             compensateScore(player, betAmount * bettingOdds - betAmount);
         } else {
-            // lose
-            emit DrawingRequest(drawNo, block.timestamp, msg.sender, sequenceNumber, userRandom, providerRandom, 
-                finnalRandom, betAmount, betNumber, drawNumber, false); 
             takeScore(player, betAmount);
         }
-        
-        playerRecordBlockIdEnd[msg.sender] = block.number;
+
+        // log draw event        
+        emit DrawingRequest(previousBlockId, drawNo, block.timestamp, msg.sender, sequenceNumber, userRandom, providerRandom, finnalRandom, drawNumber, betAmount, betNumber, isWin); 
+
+        playerRecordLatestBlockId[msg.sender] = block.number;
         playerDrawCnts[msg.sender] = drawNo;
-        if (playerRecordBlockIdStart[msg.sender] <= 0) {
-            playerRecordBlockIdStart[msg.sender] = block.number;
-        }
 
         delete playersBetInfo[player];
     }
@@ -97,12 +93,8 @@ contract RouletteGame is PandaToken, Random {
         sequenceNumber = betInfo.sequenceNumber;
     }
 
-    function getRecordBlockIdStart() external view returns(uint256) {
-        return playerRecordBlockIdStart[msg.sender];
-    }
-
-    function getRecordBlockIdEnd() external view returns(uint256) {
-        return playerRecordBlockIdEnd[msg.sender];
+    function getRecordLatestBlockId() external view returns(uint256) {
+        return playerRecordLatestBlockId[msg.sender];
     }
 
     function getDrawCnt() external view returns(uint256) {
