@@ -18,7 +18,19 @@ contract RouletteGame is PandaToken, Random {
     mapping (address => uint256) public playersHasGetInitAmount;
 
     event BetRequest(uint64 sequenceNumber);
-    event DrawingRequest(uint256 randomNumber, uint256 drawNumber, bool isWin);
+
+    event DrawingRequest(
+        uint256 drawTime,
+        address player, 
+        uint64 sequenceNumber, 
+        bytes32 userRandom, 
+        bytes32 providerRandom, 
+        uint256 finnalRandom, 
+        uint256 betAmount,
+        uint256 betNumber,
+        uint256 drawNumber, 
+        bool isWin
+    );
 
     // 投注信息
     struct BetInfo {
@@ -47,17 +59,22 @@ contract RouletteGame is PandaToken, Random {
     function drawing(address player, uint64 sequenceNumber, bytes32 userRandom, bytes32 providerRandom) external {
         require(playersBetInfo[player].sequenceNumber == sequenceNumber, "sequenceNumber is not match");
 
-        uint256 randomNumber = uint256(revealFlip(sequenceNumber, userRandom, providerRandom));
-        uint256 drawNumber = (randomNumber % betCounts) + beginNumber;
+        uint256 finnalRandom = uint256(revealFlip(sequenceNumber, userRandom, providerRandom));
+        uint256 drawNumber = (finnalRandom % betCounts) + beginNumber;
 
-        uint256 userBetNumber = playersBetInfo[player].betNumber;
-        uint256 userBetAmount = playersBetInfo[player].betAmount;
-        if (userBetNumber == drawNumber ) { // user win
-            emit DrawingRequest(randomNumber, drawNumber, true);
-            compensateScore(player, userBetAmount * bettingOdds - userBetAmount);
+        uint256 betNumber = playersBetInfo[player].betNumber;
+        uint256 betAmount = playersBetInfo[player].betAmount;
+        
+        if (betNumber == drawNumber ) { // user win
+            // win
+            emit DrawingRequest(block.timestamp, msg.sender, sequenceNumber, userRandom, providerRandom, 
+                finnalRandom, betAmount, betNumber, drawNumber, true); 
+            compensateScore(player, betAmount * bettingOdds - betAmount);
         } else {
-            emit DrawingRequest(randomNumber, drawNumber, false);
-            takeScore(player, userBetAmount);
+            // lose
+            emit DrawingRequest(block.timestamp, msg.sender, sequenceNumber, userRandom, providerRandom, 
+                finnalRandom, betAmount, betNumber, drawNumber, false); 
+            takeScore(player, betAmount);
         }
         
         delete playersBetInfo[player];
