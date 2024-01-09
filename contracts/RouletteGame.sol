@@ -13,13 +13,12 @@ contract RouletteGame is PandaToken, Random {
     uint256 betCounts;
 
     // 玩家的下注信息
-    mapping(address => BetInfo) public playersBetInfo;
-
-    mapping (address => uint256) public playersHasGetInitAmount;
+    mapping(address => BetInfo) private playersBetInfo;
 
     event BetRequest(uint64 sequenceNumber);
 
     event DrawingRequest(
+        uint256 drawNo,
         uint256 drawTime,
         address player, 
         uint64 sequenceNumber, 
@@ -31,6 +30,10 @@ contract RouletteGame is PandaToken, Random {
         uint256 drawNumber, 
         bool isWin
     );
+
+    mapping(address => uint256) private playerRecordBlockIdStart;
+    mapping(address => uint256) private playerRecordBlockIdEnd;
+    mapping(address => uint256) private playerDrawCnts;
 
     // 投注信息
     struct BetInfo {
@@ -61,22 +64,29 @@ contract RouletteGame is PandaToken, Random {
 
         uint256 finnalRandom = uint256(revealFlip(sequenceNumber, userRandom, providerRandom));
         uint256 drawNumber = (finnalRandom % betCounts) + beginNumber;
+        uint256 drawNo = playerDrawCnts[msg.sender] + 1;
 
         uint256 betNumber = playersBetInfo[player].betNumber;
         uint256 betAmount = playersBetInfo[player].betAmount;
         
         if (betNumber == drawNumber ) { // user win
             // win
-            emit DrawingRequest(block.timestamp, msg.sender, sequenceNumber, userRandom, providerRandom, 
+            emit DrawingRequest(drawNo, block.timestamp, msg.sender, sequenceNumber, userRandom, providerRandom, 
                 finnalRandom, betAmount, betNumber, drawNumber, true); 
             compensateScore(player, betAmount * bettingOdds - betAmount);
         } else {
             // lose
-            emit DrawingRequest(block.timestamp, msg.sender, sequenceNumber, userRandom, providerRandom, 
+            emit DrawingRequest(drawNo, block.timestamp, msg.sender, sequenceNumber, userRandom, providerRandom, 
                 finnalRandom, betAmount, betNumber, drawNumber, false); 
             takeScore(player, betAmount);
         }
         
+        playerRecordBlockIdEnd[msg.sender] = block.number;
+        playerDrawCnts[msg.sender] = drawNo;
+        if (playerRecordBlockIdStart[msg.sender] <= 0) {
+            playerRecordBlockIdStart[msg.sender] = block.number;
+        }
+
         delete playersBetInfo[player];
     }
 
@@ -85,5 +95,17 @@ contract RouletteGame is PandaToken, Random {
         betAmount = betInfo.betAmount;
         betNumber = betInfo.betNumber;
         sequenceNumber = betInfo.sequenceNumber;
+    }
+
+    function getRecordBlockIdStart() external view returns(uint256) {
+        return playerRecordBlockIdStart[msg.sender];
+    }
+
+    function getRecordBlockIdEnd() external view returns(uint256) {
+        return playerRecordBlockIdEnd[msg.sender];
+    }
+
+    function getDrawCnt() external view returns(uint256) {
+        return playerDrawCnts[msg.sender];
     }
 }
