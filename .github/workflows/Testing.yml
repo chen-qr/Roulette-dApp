@@ -15,4 +15,4 @@ jobs:
       - name: Run tests
         env:
           PRIVATE_KEY: ${{ secrets.TEST_KEY }}
-        run: npx hardhat clean
+        run: npx hardhat clean && npx hardhat compile && npx hardhat test
