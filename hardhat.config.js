@@ -1,4 +1,4 @@
-require('dotenv').config() // 默认是.env文件
+// require('dotenv').config() // 默认是.env文件
 require("@nomicfoundation/hardhat-toolbox");
 
 /** @type import('hardhat/config').HardhatUserConfig */

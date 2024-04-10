@@ -11,5 +11,7 @@ jobs:
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "This job's status is ${{ job.status }}."
       - run: npx hardhat --version
-      - run: touch .env && cat ${{ secrets.TEST_KEY }} > .env
-      - run: npx hardhat clean
+      - name: Run tests
+        env:
+          PRIVATE_KEY: ${{ secrets.TEST_KEY }}
+        run: npx hardhat clean
