@@ -5,7 +5,11 @@ module.exports = {
   solidity: "0.8.20",
 
   networks: {
-    hardhat: {},
+    hardhat: {
+      forking: {
+        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`
+      }
+    },
     // linknet's testnet
     pegasus: {
       url: 'https://replicator.pegasus.lightlink.io/rpc/v1',

@@ -15,4 +15,5 @@ jobs:
       - name: Run tests
         env:
           PRIVATE_KEY: ${{ secrets.TEST_KEY }}
+          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
         run: npx hardhat clean && npx hardhat compile && npx hardhat test
