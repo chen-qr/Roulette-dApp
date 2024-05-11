@@ -14,8 +14,6 @@ describe("Test Fork", function() {
         const { forkTest } = await loadFixture(deployTokenFixture);
 
         const balance = await forkTest.getBalance(process.env.FORK_TEST_ADDR);
-        console.log(balance);
-
-        assert(balance > 100,  "主网账户余额正确");
+        assert(balance > 0.0001 * 10^18,  "测试账户在主网超过0.0001ETH，Fork主网成功");
     });
 });
