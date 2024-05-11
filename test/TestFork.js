@@ -14,6 +14,7 @@ describe("Test Fork", function() {
         const { forkTest } = await loadFixture(deployTokenFixture);
 
         const balance = await forkTest.getBalance(process.env.FORK_TEST_ADDR);
+        console.log(balance);
 
         assert(balance > 100,  "主网账户余额正确");
     });
