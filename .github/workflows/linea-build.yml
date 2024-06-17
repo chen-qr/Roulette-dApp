@@ -1,6 +1,9 @@
-name: Testing
-run-name: ${{ github.actor }} is testing.
-on: [push]
+name: linea-build
+run-name: ${{ github.actor }} is building.
+on: 
+  push:
+    branches:
+      - linea
 jobs:
   ContractTesting:
     runs-on: ubuntu-latest
