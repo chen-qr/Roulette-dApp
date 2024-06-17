@@ -1,5 +1,5 @@
-name: Testing
-run-name: ${{ github.actor }} is testing.
+name: linea-build
+run-name: ${{ github.actor }} is building.
 on: 
   push:
     branches:
