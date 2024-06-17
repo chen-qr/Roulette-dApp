@@ -16,6 +16,7 @@ jobs:
       - name: Run tests
         env:
           PRIVATE_KEY: ${{ secrets.TEST_KEY }}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
           ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
           FORK_TEST_ADDR: ${{ secrets.FORK_TEST_ADDR }}
         run: npx hardhat clean && npx hardhat compile && npx hardhat test
